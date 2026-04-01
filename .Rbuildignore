@@ -11,13 +11,11 @@
 ^renv$
 ^renv\.lock$
 ^\.Rproj\.user$
-^LICENSE\.md$
 ^LICENSE\.txt$
 ^\.Rprofile$
 ^justfile$
 ^data-raw$
 ^.*\.Rproj$
-^\.github$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
@@ -38,9 +36,7 @@
 ^Rplots\.pdf$
 ^\.Rhistory$
 ^\.RData$
-^vignettes/*_files$
 ^vignettes/data-raw$
-^vignettes/\.quarto$
 ^vignettes/articles$
 ^vignettes/articles/\.quarto$
 ^vignettes/articles/*_files$
@@ -53,7 +49,5 @@
 ^[\.]?air\.toml$
 ^\.pixi/$
 ^\.DS_Store$
-^[.]?air[.]toml$
-^\.vscode$
 ^\.rumdl_cache$
 ^\.opencode/$

@@ -9,7 +9,7 @@
 #' @param classes Character vector of length 2: `c(positive, negative)`. If
 #'   `NULL`, levels of `truth` are used (second level = positive).
 #'
-#' @return A data frame with columns:
+#' @returns A data frame with columns:
 #'   - `threshold`: the decision threshold
 #'   - `tpr`: true positive rate (sensitivity)
 #'   - `fpr`: false positive rate (1 - specificity)
@@ -70,7 +70,7 @@ compute_roc <- function(truth, decision_values, classes = NULL) {
 #' @param roc_data Precomputed ROC data frame (from `compute_roc()`). If
 #'   provided, `truth`, `decision_values`, and `classes` are ignored.
 #'
-#' @return A single numeric value representing the AUC (between 0 and 1).
+#' @returns A single numeric value representing the AUC (between 0 and 1).
 #'
 #' @noRd
 compute_auc <- function(

@@ -10,7 +10,7 @@
 #' @param decision_values An optional numeric vector of decision/score values.
 #'   If provided, AUC is also computed.
 #'
-#' @return A named numeric vector with elements `accuracy`, `sensitivity`,
+#' @returns A named numeric vector with elements `accuracy`, `sensitivity`,
 #'   `specificity`, `balanced_accuracy`, and optionally `auc`.
 #'
 #' @export
@@ -83,7 +83,7 @@ swap_prediction_stats <- function(
 #' @param predictions Logical; include predictions in the output?
 #' @param decision_values Logical; include decision values in the output?
 #'
-#' @return A list with:
+#' @returns A list with:
 #'   - `stats`: named numeric vector of performance statistics
 #'   - `roc`: ROC curve data frame (from internal `compute_roc()`)
 #'   - `predictions` (if requested): factor of predictions
@@ -148,7 +148,7 @@ swap_ktsp_result <- function(
 #' @param decision_values Logical; include decision values?
 #' @param ... Additional arguments passed to [swap_train_ktsp()].
 #'
-#' @return A list with components:
+#' @returns A list with components:
 #'   - `classifier`: the trained KTSP classifier
 #'   - `train`: training set statistics
 #'   - `test`: test set statistics

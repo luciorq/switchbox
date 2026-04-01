@@ -10,7 +10,7 @@
 #' @param restricted_pairs An optional two-column character matrix specifying
 #'   feature pairs. Both columns must contain strings matching `rownames(x)`.
 #'
-#' @return Invisible `NULL`. Called for its side effect of raising errors
+#' @returns Invisible `NULL`. Called for its side effect of raising errors
 #'   on invalid input.
 #'
 #' @noRd
@@ -80,7 +80,7 @@ check_input <- function(y, x, restricted_pairs) {
 #' @param verbose Logical; print progress messages?
 #' @param ... Additional arguments passed to `filter_fn`.
 #'
-#' @return A list with components:
+#' @returns A list with components:
 #'   - `x`: the filtered numeric matrix
 #'   - `filtered_pairs`: the filtered restricted pairs (or `NULL`)
 #'

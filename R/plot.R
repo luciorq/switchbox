@@ -11,7 +11,7 @@
 #' @param colors Character vector of colors for each gene. If not provided,
 #'   uses the default ggplot2 color palette.
 #'
-#' @return A [ggplot2::ggplot] object.
+#' @returns A [ggplot2::ggplot] object.
 #'
 #' @export
 #'
@@ -102,7 +102,7 @@ swap_plot_genes <- function(x, y, classes, genes, colors = NULL) {
 #' @param genes Character vector of exactly 2 gene names.
 #' @param colors Character vector of 2 colors for the two classes.
 #'
-#' @return A [ggplot2::ggplot] object.
+#' @returns A [ggplot2::ggplot] object.
 #'
 #' @export
 #'
@@ -167,7 +167,7 @@ swap_plot_gene_pair_scatter <- function(x, y, classes, genes, colors = NULL) {
 #'   frames with `fpr` and `tpr` columns).
 #' @param colors Character vector of 2 colors for train and test curves.
 #'
-#' @return A [ggplot2::ggplot] object.
+#' @returns A [ggplot2::ggplot] object.
 #'
 #' @export
 #'
@@ -247,7 +247,7 @@ swap_plot_roc <- function(result, colors = NULL) {
 #' @param combine_fn Optional combine function passed to
 #'   [swap_ktsp_statistics()].
 #'
-#' @return A [ggplot2::ggplot] object.
+#' @returns A [ggplot2::ggplot] object.
 #'
 #' @export
 #'
@@ -334,7 +334,7 @@ swap_plot_votes <- function(classifier, x, y = NULL, combine_fn) {
 #'   `"byClass"`. Controls how points are colored when `points = TRUE`.
 #' @param colors Character vector of 2 colors for the gene boxplots.
 #'
-#' @return A [ggplot2::ggplot] object.
+#' @returns A [ggplot2::ggplot] object.
 #'
 #' @export
 #'
@@ -450,7 +450,7 @@ swap_plot_gene_pair_boxplot <- function(
 #'   groups by class.
 #' @param colors Character vector of 2 colors for the two classes.
 #'
-#' @return A [ggplot2::ggplot] object.
+#' @returns A [ggplot2::ggplot] object.
 #'
 #' @export
 #'

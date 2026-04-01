@@ -3,18 +3,13 @@
 
 # Example code in package build process
 *-Ex.R
-
 # R data files from past sessions
 .Rdata
-
 # RStudio files
 .Rproj.user/
 inst/doc
 **/.quarto/
-
 .Rproj.user
-.Rhistory
-.Rdata
 .httr-oauth
 .DS_Store
 renv
@@ -22,8 +17,6 @@ renv.lock
 revdep
 .Rprofile
 README.html
-inst/doc
-**/.quarto/
 docs
 *.RData
 *.Rhistory

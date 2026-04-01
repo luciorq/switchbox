@@ -24,7 +24,7 @@
 #' @param score_opts A list of additional options passed to `score_fn`.
 #' @param ... Additional arguments passed to `filter_fn`.
 #'
-#' @return A list with components:
+#' @returns A list with components:
 #'   - `score`: named numeric vector of pair scores (names are `"gene1,gene2"`)
 #'   - `labels`: character vector of length 2 with class labels
 #'   - `tie_vote`: integer vector of tie-vote types (0 = both, 1 = class 0
@@ -95,7 +95,7 @@ swap_calculate_scores <- function(
 #' @param verbose Logical; print progress messages?
 #' @param score_opts Additional options (unused, for API compatibility).
 #'
-#' @return A list with `score`, `labels`, `tie_vote`, and `signed` components.
+#' @returns A list with `score`, `labels`, `tie_vote`, and `signed` components.
 #'
 #' @export
 #'
@@ -156,7 +156,7 @@ swap_calculate_signed_tsp_scores <- function(
 #'
 #' @inheritParams swap_calculate_signed_tsp_scores
 #'
-#' @return A list with `score`, `labels`, `tie_vote`, and `signed` components.
+#' @returns A list with `score`, `labels`, `tie_vote`, and `signed` components.
 #'
 #' @export
 #'

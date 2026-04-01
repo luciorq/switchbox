@@ -28,7 +28,7 @@
 #' @param verbose Logical; print progress messages?
 #' @param ... Additional arguments passed to `filter_fn`.
 #'
-#' @return A list (the classifier) with components:
+#' @returns A list (the classifier) with components:
 #'   - `name`: character string like `"5TSPS"`
 #'   - `TSPs`: character matrix with K rows and 2 columns (gene1, gene2)
 #'   - `score`: numeric vector of pair scores
@@ -118,7 +118,7 @@ swap_train_ktsp <- function(
 #'
 #' @inheritParams swap_train_ktsp
 #'
-#' @return A list (the classifier) with the same structure as
+#' @returns A list (the classifier) with the same structure as
 #'   [swap_train_ktsp()] but with exactly one pair.
 #'
 #' @export
@@ -205,7 +205,7 @@ swap_train_1tsp <- function(
 #' @param k_range Integer vector of candidate K values.
 #' @param k_opts List of additional options (currently unused).
 #'
-#' @return Integer vector of selected row indices into `score_table`.
+#' @returns Integer vector of selected row indices into `score_table`.
 #'
 #' @export
 #'
@@ -279,7 +279,7 @@ swap_k_by_ttest <- function(
 #'   - `measurement`: character, one of `"accuracy"`, `"sensitivity"`,
 #'     `"specificity"`, `"balanced_accuracy"`, `"auc"` (default `"auc"`)
 #'
-#' @return Integer vector of selected row indices.
+#' @returns Integer vector of selected row indices.
 #'
 #' @export
 swap_k_by_measurement <- function(
@@ -430,7 +430,7 @@ make_tsp_table <- function(scores, maxk, disjoint = TRUE) {
 #' @param disjoint Logical; require pairs to be disjoint (no shared features)?
 #'   Default is `TRUE`.
 #'
-#' @return A data frame with columns `gene1`, `gene2`, `score`, and
+#' @returns A data frame with columns `gene1`, `gene2`, `score`, and
 #'   `tie_vote`, sorted by descending absolute score.
 #'
 #' @export

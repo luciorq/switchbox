@@ -4,7 +4,7 @@
 \name{switchbox-package}
 \alias{switchbox}
 \alias{switchbox-package}
-\title{switchbox: K-Top-Scoring-Pair (KTSP) Classification Algorithm}
+\title{switchbox: K-Top-Scoring-Pair (KTSP) Classification}
 \description{
 Train and validate binary classifiers based on pair-wise feature comparisons using the K-Top-Scoring-Pair (KTSP) algorithm. The KTSP classifier uses the relative ordering of feature values (e.g. gene expression levels) to make predictions, making it robust to data normalization and producing transparent decision rules. The package supports feature filtering, restricted pair selection, cross-validation, and various performance evaluation methods.
 }

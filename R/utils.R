@@ -5,7 +5,7 @@
 #'
 #' @param m A numeric matrix with rownames and colnames.
 #'
-#' @return A named numeric vector.
+#' @returns A named numeric vector.
 #'
 #' @export
 #'
@@ -24,7 +24,7 @@ swap_score_matrix_to_vector <- function(m) {
 #'
 #' @param v A named numeric vector.
 #'
-#' @return A numeric matrix with appropriate rownames and colnames.
+#' @returns A numeric matrix with appropriate rownames and colnames.
 #'
 #' @export
 #'
@@ -47,7 +47,7 @@ swap_score_vector_to_matrix <- function(v) {
 #'   from `levels(y)`.
 #' @param p Numeric; proportion of samples for training. Default is `0.5`.
 #'
-#' @return A list with components:
+#' @returns A list with components:
 #'   - `train_x`, `test_x`: data matrices
 #'   - `train_y`, `test_y`: label factors
 #'   - `train_ids`, `test_ids`: sample indices

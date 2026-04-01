@@ -14,7 +14,7 @@
 #'   Default is `TRUE`.
 #' @param ... Additional arguments passed to [swap_train_ktsp()].
 #'
-#' @return A list with:
+#' @returns A list with:
 #'   - `cv`: list of per-fold results
 #'   - `folds`: the fold index lists used
 #'   - `predictions`: combined predictions across all folds
@@ -106,7 +106,7 @@ swap_ktsp_cv <- function(
 #'   from `levels(y)`.
 #' @param ... Additional arguments passed to [swap_train_ktsp()].
 #'
-#' @return A list with:
+#' @returns A list with:
 #'   - `loo`: list of per-sample results
 #'   - `predictions`: combined predictions
 #'   - `decision_values`: combined decision values
@@ -171,7 +171,7 @@ swap_ktsp_loo <- function(x, y, classes = NULL, ...) {
 #' @param y A factor or vector of class labels.
 #' @param k Integer; number of folds. Default is `4`.
 #'
-#' @return A list of length `k`, where each element is an integer vector of
+#' @returns A list of length `k`, where each element is an integer vector of
 #'   sample indices for that fold.
 #'
 #' @export

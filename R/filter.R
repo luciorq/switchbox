@@ -11,7 +11,7 @@
 #'   up-regulated and down-regulated features. If `FALSE`, return the top
 #'   features by absolute test statistic regardless of direction.
 #'
-#' @return A character vector of selected feature names.
+#' @returns A character vector of selected feature names.
 #'
 #' @export
 #'

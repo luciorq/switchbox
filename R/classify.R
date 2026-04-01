@@ -11,7 +11,7 @@
 #' @param combine_fn An optional function to aggregate the per-TSP votes. If
 #'   not provided, uses the default signed voting statistic.
 #'
-#' @return A list with:
+#' @returns A list with:
 #'   - `statistics`: named numeric vector of aggregate per-sample statistics
 #'   - `comparisons`: matrix (samples x pairs) of individual TSP comparisons
 #'
@@ -126,7 +126,7 @@ swap_ktsp_statistics <- function(x, classifier, combine_fn) {
 #'   statistic and returns a logical vector (TRUE = second class). If not
 #'   provided, uses the default `statistic > 0`.
 #'
-#' @return A factor of predicted class labels, with levels matching
+#' @returns A factor of predicted class labels, with levels matching
 #'   `classifier$labels`.
 #'
 #' @export
