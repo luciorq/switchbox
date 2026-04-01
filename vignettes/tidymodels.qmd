@@ -1,0 +1,224 @@
+---
+title: "Using switchbox with tidymodels"
+vignette: >
+  %\VignetteIndexEntry{Using switchbox with tidymodels}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(switchbox)
+library(rsample)
+library(yardstick)
+library(dplyr)
+library(purrr)
+```
+
+## Introduction
+
+The tidymodels ecosystem provides a consistent interface for resampling
+(`rsample`), performance metrics (`yardstick`), and data manipulation
+(`dplyr`, `purrr`). This vignette shows how to use these packages alongside
+switchbox for cross-validated model evaluation.
+
+The main challenge is that switchbox expects **features in rows** and
+**samples in columns**, while tidymodels works with **samples in rows** and
+**features in columns**. The helper functions `swap_from_tidy()`,
+`swap_to_tidy()`, and `swap_tidy_result()` bridge this gap.
+
+## Data Format Conversion
+
+### From tidy to switchbox
+
+Suppose you have data in a tidy data frame with one row per sample:
+
+```{r}
+#| label: from-tidy-demo
+df <- data.frame(
+  outcome = factor(c("Good", "Bad", "Good", "Bad", "Good")),
+  gene_A = c(2.1, 5.3, 1.8, 4.9, 2.5),
+  gene_B = c(7.2, 3.1, 6.8, 2.9, 7.0)
+)
+df
+```
+
+Convert to switchbox format with `swap_from_tidy()`. When you specify an
+`outcome` column, it returns both the matrix and the labels:
+
+```{r}
+#| label: from-tidy-convert
+result <- swap_from_tidy(df, outcome = "outcome")
+result$x
+result$y
+```
+
+### From switchbox to tidy
+
+The reverse operation uses `swap_to_tidy()`:
+
+```{r}
+#| label: to-tidy-demo
+data(trainingData)
+tidy_df <- swap_to_tidy(matTraining, trainingGroup, outcome = "prognosis")
+tidy_df[1:5, 1:5]
+```
+
+## Train/Test Split with rsample
+
+Using `rsample::initial_split()` with the package's built-in breast cancer
+data:
+
+```{r}
+#| label: rsample-split
+data(trainingData)
+
+# Create a tidy data frame for rsample
+full_df <- swap_to_tidy(matTraining, trainingGroup, outcome = "prognosis")
+
+set.seed(42)
+split <- initial_split(full_df, prop = 0.7, strata = prognosis)
+
+train_df <- training(split)
+test_df <- testing(split)
+
+cat("Training:", nrow(train_df), "samples\n")
+cat("Testing: ", nrow(test_df), "samples\n")
+```
+
+Convert back to switchbox format, train, and evaluate:
+
+```{r}
+#| label: rsample-train-eval
+train_data <- swap_from_tidy(train_df, outcome = "prognosis")
+test_data <- swap_from_tidy(test_df, outcome = "prognosis")
+
+classifier <- swap_train_ktsp(
+  train_data$x, train_data$y,
+  k_range = 3:6
+)
+
+# Classify test samples and get yardstick-compatible results
+results <- swap_tidy_result(classifier, test_data$x, test_data$y)
+head(results)
+```
+
+Evaluate with yardstick:
+
+```{r}
+#| label: rsample-metrics
+metrics <- metric_set(accuracy, sensitivity, specificity, bal_accuracy)
+metrics(results, truth = truth, estimate = .pred_class)
+```
+
+## Cross-Validation with rsample
+
+### Setting Up Folds
+
+```{r}
+#| label: cv-setup
+set.seed(123)
+folds <- vfold_cv(full_df, v = 5, strata = prognosis)
+folds
+```
+
+### Per-Fold Training and Evaluation
+
+Define a function that trains a switchbox classifier on the analysis set
+(training fold) and evaluates it on the assessment set (validation fold):
+
+```{r}
+#| label: cv-function
+evaluate_fold <- function(split) {
+  train_df <- analysis(split)
+  test_df <- assessment(split)
+
+  train_data <- swap_from_tidy(train_df, outcome = "prognosis")
+  test_data <- swap_from_tidy(test_df, outcome = "prognosis")
+
+  classifier <- swap_train_ktsp(
+    train_data$x, train_data$y,
+    k_range = 3:6
+  )
+
+  swap_tidy_result(classifier, test_data$x, test_data$y)
+}
+```
+
+Run across all folds:
+
+```{r}
+#| label: cv-run
+fold_results <- map(folds$splits, evaluate_fold)
+```
+
+### Computing Per-Fold Metrics
+
+```{r}
+#| label: cv-metrics
+metrics_fn <- metric_set(accuracy, sensitivity, specificity, bal_accuracy)
+
+fold_metrics <- map_dfr(fold_results, function(res) {
+  metrics_fn(res, truth = truth, estimate = .pred_class)
+}, .id = "fold")
+
+fold_metrics
+```
+
+### Aggregating Across Folds
+
+Compute mean and standard error for each metric:
+
+```{r}
+#| label: cv-summary
+cv_summary <- fold_metrics |>
+  group_by(.metric) |>
+  summarize(
+    mean = mean(.estimate),
+    se = sd(.estimate) / sqrt(n()),
+    .groups = "drop"
+  )
+cv_summary
+```
+
+### Confusion Matrix
+
+Pool predictions from all folds for an overall confusion matrix:
+
+```{r}
+#| label: cv-confusion
+all_results <- bind_rows(fold_results)
+conf_mat(all_results, truth = truth, estimate = .pred_class)
+```
+
+## Comparison with Built-In Cross-Validation
+
+The switchbox package includes `swap_ktsp_cv()` for convenience. Here is
+the same 5-fold CV for comparison:
+
+```{r}
+#| label: builtin-cv
+set.seed(123)
+builtin_cv <- swap_ktsp_cv(
+  matTraining, trainingGroup,
+  k = 5,
+  k_range = 3:6
+)
+builtin_cv$stats
+```
+
+The tidymodels approach gives you more flexibility: stratified folds,
+custom metric sets, and easy integration with other tidymodels components.
+The built-in function is simpler when you just need a quick estimate.
+
+## Session Info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```

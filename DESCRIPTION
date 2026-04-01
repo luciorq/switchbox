@@ -23,10 +23,15 @@ Imports:
     ggplot2,
     stats
 Suggests:
+    dplyr,
     knitr,
+    purrr,
     quarto,
     rmarkdown,
-    testthat (>= 3.0.0)
+    rsample,
+    testthat (>= 3.0.0),
+    tibble,
+    yardstick
 VignetteBuilder: 
     quarto
 Config/testthat/edition: 3
