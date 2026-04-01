@@ -9,3 +9,24 @@
 
 # RStudio files
 .Rproj.user/
+inst/doc
+**/.quarto/
+
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+renv
+renv.lock
+revdep
+.Rprofile
+README.html
+inst/doc
+**/.quarto/
+docs
+*.RData
+*.Rhistory
+*.gz
+.Rapp.history
+.quarto
