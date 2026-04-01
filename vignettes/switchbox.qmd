@@ -1,0 +1,344 @@
+---
+title: "Getting Started with switchbox"
+vignette: >
+  %\VignetteIndexEntry{Getting Started with switchbox}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+bibliography: switchBox.bib
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(switchbox)
+```
+
+## Introduction
+
+The `switchbox` package implements the K-Top-Scoring-Pair (KTSP) algorithm for
+binary classification based on pairwise feature comparisons
+[@afsari2015switchbox; @marchionni2013simple]. The classifier uses the relative
+ordering of feature values (e.g. gene expression levels) to make predictions,
+making it:
+- **Robust** to data normalization and batch effects
+- **Transparent** --- decision rules are simple comparisons (gene A > gene B)
+- **Compact** --- a small number of feature pairs suffice for classification
+
+This vignette demonstrates the core workflow: training a KTSP classifier,
+classifying new samples, evaluating performance, and creating diagnostic plots.
+
+## Example Data
+
+The package ships with breast cancer expression data from the MammaPrint
+study. The training set has 70 genes measured across 78 samples, and the
+test set has 307 samples.
+
+```{r}
+#| label: load-data
+data(trainingData)
+data(testingData)
+
+dim(matTraining)
+table(trainingGroup)
+
+dim(matTesting)
+table(testingGroup)
+```
+
+## Training a KTSP Classifier
+
+Use `swap_train_ktsp()` to train a classifier. By default it:
+
+1. Filters features using the Wilcoxon rank-sum test (`swap_filter_wilcoxon()`)
+2. Computes signed TSP scores via C-backed routines
+3. Selects the number of pairs K using a t-test criterion (`swap_k_by_ttest()`)
+
+```{r}
+#| label: train-default
+classifier <- swap_train_ktsp(matTraining, trainingGroup, k_range = 3:8)
+classifier$name
+classifier$TSPs
+```
+
+The classifier contains `r nrow(classifier$TSPs)` top-scoring pairs. Each row
+of `classifier$TSPs` is a pair (gene1, gene2) where gene1 < gene2 is expected
+in one class.
+
+### Training a Single-TSP Classifier
+
+For the simplest possible classifier (one pair):
+
+```{r}
+#| label: train-1tsp
+classifier_1tsp <- swap_train_1tsp(matTraining, trainingGroup)
+classifier_1tsp$TSPs
+```
+
+### Customizing the Feature Filter
+
+You can skip filtering by setting `filter_fn = NULL`, or provide a custom
+filter:
+
+```{r}
+#| label: train-nofilter
+classifier_nf <- swap_train_ktsp(
+  matTraining, trainingGroup,
+  filter_fn = NULL,
+  k_range = 3:5
+)
+classifier_nf$name
+```
+
+### Restricted Pairs
+
+If prior knowledge suggests specific candidate pairs, pass them as a
+two-column character matrix:
+
+```{r}
+#| label: train-restricted
+genes <- rownames(matTraining)
+restricted <- cbind(
+  rep(genes[1:10], each = 5),
+  rep(genes[11:15], times = 10)
+)
+classifier_rp <- swap_train_ktsp(
+  matTraining, trainingGroup,
+  restricted_pairs = restricted,
+  k_range = 2:5
+)
+classifier_rp$TSPs
+```
+
+### Handling Ties
+
+Enable tie-aware scoring with `handle_ties = TRUE`:
+
+```{r}
+#| label: train-ties
+classifier_ties <- swap_train_ktsp(
+  matTraining, trainingGroup,
+  handle_ties = TRUE,
+  k_range = 3:6
+)
+classifier_ties$tie_vote
+```
+
+### Selecting K by Performance Metric
+
+Instead of the default t-test, select K by maximizing AUC or accuracy on
+training data:
+
+```{r}
+#| label: train-kbymeasurement
+classifier_auc <- swap_train_ktsp(
+  matTraining, trainingGroup,
+  k_range = 2:8,
+  k_selection_fn = swap_k_by_measurement,
+  k_opts = list(measurement = "auc")
+)
+classifier_auc$name
+```
+
+## Classification
+
+### Computing Voting Statistics
+
+`swap_ktsp_statistics()` returns per-sample aggregate statistics and a
+matrix of individual pair comparisons:
+
+```{r}
+#| label: statistics
+stats <- swap_ktsp_statistics(matTesting, classifier)
+head(stats$statistics)
+stats$comparisons[1:5, ]
+```
+
+### Predicting Class Labels
+
+`swap_ktsp_classify()` returns predicted class labels via majority voting:
+
+```{r}
+#| label: classify
+predictions <- swap_ktsp_classify(matTesting, classifier)
+table(predictions, testingGroup)
+```
+
+## Performance Evaluation
+
+### Prediction Statistics
+
+```{r}
+#| label: pred-stats
+perf <- swap_prediction_stats(predictions, testingGroup)
+perf
+```
+
+### Combined Train-and-Test Evaluation
+
+`swap_train_test_results()` trains a classifier and evaluates it on both
+sets in one call:
+
+```{r}
+#| label: train-test
+result <- swap_train_test_results(
+  matTraining, trainingGroup,
+  matTesting, testingGroup,
+  k_range = 3:8,
+  decision_values = TRUE
+)
+result$train
+result$test
+```
+
+## Cross-Validation
+
+### K-Fold Cross-Validation
+
+```{r}
+#| label: cv
+set.seed(42)
+cv_result <- swap_ktsp_cv(
+  matTraining, trainingGroup,
+  k = 5,
+  k_range = 3:6
+)
+cv_result$stats
+```
+
+### Leave-One-Out Cross-Validation
+
+LOO is more computationally intensive but avoids random fold assignment.
+Here we use a subset for speed:
+
+```{r}
+#| label: loo
+small_x <- matTraining[1:30, 1:30]
+small_y <- trainingGroup[1:30]
+loo_result <- swap_ktsp_loo(small_x, small_y, k_range = 2:4)
+loo_result$stats
+```
+
+## Visualization
+
+The package provides several ggplot2-based diagnostic plots.
+
+### Gene Expression Across Samples
+
+```{r}
+#| label: plot-genes
+#| fig-width: 8
+#| fig-height: 4
+swap_plot_genes(
+  matTraining, trainingGroup,
+  genes = classifier$TSPs[1, ]
+)
+```
+
+### Gene Pair Scatter Plot
+
+```{r}
+#| label: plot-scatter
+#| fig-width: 5
+#| fig-height: 5
+swap_plot_gene_pair_scatter(
+  matTraining, trainingGroup,
+  genes = classifier$TSPs[1, ]
+)
+```
+
+### ROC Curves
+
+```{r}
+#| label: plot-roc
+#| fig-width: 5
+#| fig-height: 5
+swap_plot_roc(result)
+```
+
+### Vote Heatmap
+
+```{r}
+#| label: plot-votes
+#| fig-width: 10
+#| fig-height: 4
+swap_plot_votes(classifier, matTraining, trainingGroup)
+```
+
+### Gene Pair Boxplots
+
+```{r}
+#| label: plot-boxplot
+#| fig-width: 5
+#| fig-height: 4
+swap_plot_gene_pair_boxplot(
+  classifier$TSPs[1, ],
+  matTraining, trainingGroup,
+  points = TRUE,
+  point_coloring = "byClass"
+)
+```
+
+### Boxplots by Class
+
+```{r}
+#| label: plot-classes-boxplot
+#| fig-width: 6
+#| fig-height: 4
+swap_plot_gene_pair_classes_boxplot(
+  classifier$TSPs[1, ],
+  matTraining, trainingGroup,
+  points = TRUE
+)
+```
+
+## Score Computation
+
+For advanced users, the scoring infrastructure is directly accessible:
+
+```{r}
+#| label: scores
+scores <- swap_calculate_scores(matTraining, trainingGroup)
+head(sort(abs(scores$score), decreasing = TRUE))
+```
+
+Build a custom TSP table:
+
+```{r}
+#| label: tsp-table
+tbl <- swap_make_tsp_table(scores, maxk = 10, disjoint = TRUE)
+head(tbl)
+```
+
+## Utility Functions
+
+### Train/Test Splitting
+
+```{r}
+#| label: split
+set.seed(123)
+split <- swap_make_train_test_data(matTraining, trainingGroup, p = 0.7)
+dim(split$train_x)
+dim(split$test_x)
+```
+
+### Score Format Conversion
+
+```{r}
+#| label: score-convert
+m <- matrix(1:9, 3, 3, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+v <- swap_score_matrix_to_vector(m)
+v[1:4]
+```
+
+## Session Info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```
+
+## References
