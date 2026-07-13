@@ -3,8 +3,8 @@ test_that("swap_score_matrix_to_vector converts correctly", {
   v <- swap_score_matrix_to_vector(m)
 
   expect_type(v, "integer")
-  expect_true(all(grepl(",", names(v))))
-  expect_equal(length(v), 9)
+  expect_true(all(grepl(",", names(v), fixed = TRUE)))
+  expect_length(v, 9)
   expect_equal(v[["a,a"]], 1L)
 })
 
@@ -43,10 +43,7 @@ test_that("swap_make_train_test_data creates valid split", {
   expect_true("test_y" %in% names(split))
 
   # No overlap between train and test
-  expect_equal(
-    length(intersect(split$train_ids, split$test_ids)),
-    0
-  )
+  expect_length(intersect(split$train_ids, split$test_ids), 0)
   # All samples accounted for
   expect_equal(
     sort(c(split$train_ids, split$test_ids)),

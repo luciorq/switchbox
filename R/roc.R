@@ -83,7 +83,7 @@ compute_auc <- function(
     roc_data <- compute_roc(truth, decision_values, classes)
   }
 
-  if (nrow(roc_data) < 2L || any(is.na(roc_data$tpr))) {
+  if (nrow(roc_data) < 2L || anyNA(roc_data$tpr)) {
     return(NA_real_)
   }
 

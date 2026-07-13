@@ -21,7 +21,7 @@ test_that("swap_calculate_signed_tsp_scores works", {
   expect_type(scores, "list")
   expect_true(scores$signed)
   expect_true(length(scores$score) > 0)
-  expect_true(all(grepl(",", names(scores$score))))
+  expect_true(all(grepl(",", names(scores$score), fixed = TRUE)))
 })
 
 test_that("swap_calculate_basic_tsp_scores works", {

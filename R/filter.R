@@ -29,11 +29,7 @@ swap_filter_wilcoxon <- function(y, x, n_features = 100, up_down = TRUE) {
   n <- sum(y == levels(y)[1])
   m <- sum(y == levels(y)[2])
 
-  sum_zeros <- apply(
-    tied_data_p[, which(y == levels(y)[1]), drop = FALSE],
-    1,
-    sum
-  )
+  sum_zeros <- rowSums(tied_data_p[, which(y == levels(y)[1]), drop = FALSE])
   w_index <- (sum_zeros - n * (n + m + 1) / 2) /
     sqrt(n * m * (n + m + 1) / 12)
 

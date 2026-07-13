@@ -17,7 +17,7 @@
 check_input <- function(y, x, restricted_pairs) {
   # Check y
 
-  if (!is.factor(y) || length(levels(y)) != 2L) {
+  if (!is.factor(y) || nlevels(y) != 2L) {
     stop(
       "'y' must be a factor with exactly two levels.",
       call. = FALSE
@@ -55,8 +55,8 @@ check_input <- function(y, x, restricted_pairs) {
       )
     }
     if (
-      all(!restricted_pairs[, 1] %in% rownames(x)) ||
-        all(!restricted_pairs[, 2] %in% rownames(x))
+      !any(restricted_pairs[, 1] %in% rownames(x)) ||
+        !any(restricted_pairs[, 2] %in% rownames(x))
     ) {
       stop(
         "None of the 'restricted_pairs' match 'rownames(x)'.",

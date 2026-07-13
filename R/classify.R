@@ -70,7 +70,7 @@ swap_ktsp_statistics <- function(x, classifier, combine_fn) {
     colnames(comparisons) <- comparison_names
 
     if (missing(combine_fn)) {
-      ktsp_stat <- apply(comparisons, 1, sum) - n_pairs / 2
+      ktsp_stat <- rowSums(comparisons) - n_pairs / 2
       names(ktsp_stat) <- colnames(x)
     } else {
       ktsp_stat <- apply(comparisons, 1, combine_fn)
@@ -101,8 +101,8 @@ swap_ktsp_statistics <- function(x, classifier, combine_fn) {
     }
 
     if (missing(combine_fn)) {
-      s1 <- apply(as.matrix(stats1), 2, sum)
-      s2 <- apply(as.matrix(stats2), 2, sum)
+      s1 <- colSums(as.matrix(stats1))
+      s2 <- colSums(as.matrix(stats2))
       ktsp_stat <- s1 - s2
       names(ktsp_stat) <- colnames(x)
     } else {

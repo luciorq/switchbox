@@ -12,7 +12,7 @@ test_that("swap_train_ktsp trains a valid classifier", {
   expect_true(is.matrix(classifier$TSPs))
   expect_equal(ncol(classifier$TSPs), 2)
   expect_true(nrow(classifier$TSPs) >= 1)
-  expect_true(grepl("TSPS$", classifier$name))
+  expect_match(classifier$name, "TSPS$")
 })
 
 test_that("swap_train_1tsp trains a 1-TSP classifier", {

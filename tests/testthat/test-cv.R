@@ -13,7 +13,7 @@ test_that("swap_ktsp_cv runs k-fold cross-validation", {
   expect_true("stats" %in% names(result))
   expect_true("predictions" %in% names(result))
   expect_true("folds" %in% names(result))
-  expect_equal(length(result$cv), 3)
+  expect_length(result$cv, 3)
   expect_true("accuracy" %in% names(result$stats))
 })
 
@@ -26,7 +26,7 @@ test_that("swap_ktsp_cv with pre-specified folds", {
     folds = folds,
     k_range = 2:4
   )
-  expect_equal(length(result$cv), 3)
+  expect_length(result$cv, 3)
 })
 
 test_that("swap_get_kfold_indices creates balanced folds", {
@@ -34,7 +34,7 @@ test_that("swap_get_kfold_indices creates balanced folds", {
   set.seed(42)
   folds <- swap_get_kfold_indices(trainingGroup, k = 4)
 
-  expect_equal(length(folds), 4)
+  expect_length(folds, 4)
   # All indices are covered exactly once
   all_indices <- sort(unlist(folds))
   expect_equal(all_indices, seq_along(trainingGroup))
@@ -63,6 +63,6 @@ test_that("swap_ktsp_loo runs leave-one-out", {
   expect_type(result, "list")
   expect_true("loo" %in% names(result))
   expect_true("stats" %in% names(result))
-  expect_equal(length(result$loo), 10)
-  expect_equal(length(result$predictions), 10)
+  expect_length(result$loo, 10)
+  expect_length(result$predictions, 10)
 })

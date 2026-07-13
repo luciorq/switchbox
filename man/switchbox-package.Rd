@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Lucio Rezende Queiroz \email{luciorqueiroz@gmail.com}
   \item Bahman Afsari \email{bahman@jhu.edu} [copyright holder]
   \item Luigi Marchionni \email{marchion@jhu.edu} [copyright holder]
   \item Wikum Dinalankara \email{wdinala1@jhmi.edu} [copyright holder]

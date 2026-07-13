@@ -6,7 +6,7 @@ test_that("swap_ktsp_statistics returns expected structure", {
   expect_type(stats, "list")
   expect_true("statistics" %in% names(stats))
   expect_true("comparisons" %in% names(stats))
-  expect_equal(length(stats$statistics), ncol(matTraining))
+  expect_length(stats$statistics, ncol(matTraining))
   expect_equal(nrow(stats$comparisons), ncol(matTraining))
   expect_equal(ncol(stats$comparisons), nrow(classifier$TSPs))
 })
@@ -15,7 +15,7 @@ test_that("swap_ktsp_statistics works with single sample", {
   data(trainingData, package = "switchbox")
   classifier <- swap_train_ktsp(matTraining, trainingGroup, k_range = 3:5)
   stats <- swap_ktsp_statistics(matTraining[, 1, drop = FALSE], classifier)
-  expect_equal(length(stats$statistics), 1)
+  expect_length(stats$statistics, 1)
 })
 
 test_that("swap_ktsp_classify returns factor with correct levels", {
@@ -25,7 +25,7 @@ test_that("swap_ktsp_classify returns factor with correct levels", {
   preds <- swap_ktsp_classify(matTesting, classifier)
 
   expect_s3_class(preds, "factor")
-  expect_equal(length(preds), ncol(matTesting))
+  expect_length(preds, ncol(matTesting))
   expect_true(all(levels(preds) %in% classifier$labels))
 })
 
@@ -46,7 +46,7 @@ test_that("swap_ktsp_statistics works with tie-aware classifier", {
     k_range = 3:5
   )
   stats <- swap_ktsp_statistics(matTraining, classifier)
-  expect_equal(length(stats$statistics), ncol(matTraining))
+  expect_length(stats$statistics, ncol(matTraining))
 })
 
 test_that("swap_ktsp_statistics rejects non-numeric matrix", {

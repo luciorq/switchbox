@@ -325,16 +325,15 @@ swap_k_by_measurement <- function(
 
   for (i in seq_len(min(max_k, nrow(score_table)))) {
     if (i > 1L) {
-      if (disjoint) {
-        if (
-          sum(
+      if (
+        disjoint &&
+          (sum(
             as.matrix(score_table[i, 1:2]) %in%
               unique(as.vector(fit$TSPs))
           ) >
-            0
-        ) {
-          next
-        }
+            0)
+      ) {
+        next
       }
       fit$TSPs <- as.matrix(
         rbind(fit$TSPs, score_table[i, 1:2]),
@@ -389,8 +388,8 @@ make_tsp_table <- function(scores, maxk, disjoint = TRUE) {
       next
     }
 
-    if (disjoint) {
-      if (sum(pair %in% unique(c(gene1, gene2))) > 0) next
+    if (disjoint && (sum(pair %in% unique(c(gene1, gene2))) > 0)) {
+      next
     }
 
     # If score positive and signed, reverse pair order

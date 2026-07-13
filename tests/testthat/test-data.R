@@ -4,14 +4,14 @@ test_that("matTraining dataset loads correctly", {
   expect_true(is.numeric(matTraining))
   expect_equal(nrow(matTraining), 70)
   expect_equal(ncol(matTraining), 78)
-  expect_true(!is.null(rownames(matTraining)))
+  expect_false(is.null(rownames(matTraining)))
 })
 
 test_that("trainingGroup dataset loads correctly", {
   data(trainingData, package = "switchbox")
   expect_true(is.factor(trainingGroup))
-  expect_equal(length(trainingGroup), 78)
-  expect_equal(length(levels(trainingGroup)), 2)
+  expect_length(trainingGroup, 78)
+  expect_length(levels(trainingGroup), 2)
 })
 
 test_that("matTesting dataset loads correctly", {
@@ -24,5 +24,5 @@ test_that("matTesting dataset loads correctly", {
 test_that("testingGroup dataset loads correctly", {
   data(testingData, package = "switchbox")
   expect_true(is.factor(testingGroup))
-  expect_equal(length(testingGroup), 307)
+  expect_length(testingGroup, 307)
 })

@@ -113,7 +113,7 @@ test_that("swap_to_tidy without y returns only features", {
 
   expect_equal(ncol(df), 3L)
   expect_equal(nrow(df), 2L)
-  expect_equal(names(df), c("a", "b", "c"))
+  expect_named(df, c("a", "b", "c"))
 })
 
 # -- round-trip ---------------------------------------------------------------
