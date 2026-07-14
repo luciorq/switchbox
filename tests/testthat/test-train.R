@@ -114,3 +114,46 @@ test_that("swap_make_tsp_table returns a data frame", {
   # Scores should be decreasing
   expect_true(all(diff(tbl$score) <= 1e-10))
 })
+
+test_that("swap_train_1tsp preserves gene order for unsigned scores", {
+  # swap_calculate_basic_tsp_scores() produces unsigned (non-negative,
+  # asymmetric) scores. Unlike the signed score, a positive score must NOT
+  # trigger a pair reversal, since the basic score has no "flip if positive"
+  # convention: score(gene1, gene2) != score(gene2, gene1) in general.
+  data(trainingData, package = "switchbox")
+  scores <- swap_calculate_basic_tsp_scores(trainingGroup, matTraining)
+  expect_false(scores$signed)
+
+  best <- names(scores$score)[which.max(abs(scores$score))]
+  best_pair <- strsplit(best, ",", fixed = TRUE)[[1]]
+
+  classifier <- swap_train_1tsp(
+    matTraining,
+    trainingGroup,
+    score_fn = swap_calculate_basic_tsp_scores
+  )
+
+  expect_equal(classifier$TSPs[1, 1], best_pair[1])
+  expect_equal(classifier$TSPs[1, 2], best_pair[2])
+  expect_equal(unname(classifier$score), max(scores$score))
+})
+
+test_that("swap_train_1tsp still reverses pairs for signed scores", {
+  data(trainingData, package = "switchbox")
+  scores <- swap_calculate_signed_tsp_scores(trainingGroup, matTraining)
+  expect_true(scores$signed)
+
+  j <- which.max(abs(scores$score))
+  raw_pair <- strsplit(names(scores$score)[j], ",", fixed = TRUE)[[1]]
+  raw_score <- scores$score[[j]]
+
+  classifier <- swap_train_1tsp(matTraining, trainingGroup)
+
+  if (raw_score > 0) {
+    expect_equal(classifier$TSPs[1, 1], raw_pair[2])
+    expect_equal(classifier$TSPs[1, 2], raw_pair[1])
+  } else {
+    expect_equal(classifier$TSPs[1, 1], raw_pair[1])
+    expect_equal(classifier$TSPs[1, 2], raw_pair[2])
+  }
+})

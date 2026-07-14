@@ -168,13 +168,14 @@ swap_train_1tsp <- function(
   j <- which.max(abs(s$score))[1]
   pair <- unlist(strsplit(names(s$score)[j], ","))
   score <- s$score[j]
-  if (score > 0) {
+  is_reversed <- score > 0 && isTRUE(s$signed)
+  if (is_reversed) {
     pair <- rev(pair)
   }
 
   # Flip tie vote when reversing pair order
   tie_vote_change <- c(0L, 2L, 1L)
-  ties <- if (score > 0) {
+  ties <- if (is_reversed) {
     tie_vote_change[s$tie_vote[j] + 1L]
   } else {
     s$tie_vote[j]

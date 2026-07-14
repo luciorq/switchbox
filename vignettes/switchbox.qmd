@@ -65,8 +65,11 @@ classifier$TSPs
 ```
 
 The classifier contains `r nrow(classifier$TSPs)` top-scoring pairs. Each row
-of `classifier$TSPs` is a pair (gene1, gene2) where gene1 < gene2 is expected
-in one class.
+of `classifier$TSPs` is a pair (gene1, gene2): in most samples of the second
+class (`classifier$labels[2]`), gene1 > gene2, while in most samples of the
+first class (`classifier$labels[1]`), gene1 < gene2. Prediction sums these
+per-pair votes across all K pairs and calls the sample `classifier$labels[2]`
+when votes for gene1 > gene2 outnumber votes for gene1 < gene2.
 
 ### Training a Single-TSP Classifier
 

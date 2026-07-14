@@ -119,7 +119,7 @@ swap_ktsp_result <- function(
   )
 
   roc_data <- tryCatch(
-    compute_roc(y, fit_dv, classes = rev(classes)),
+    compute_roc(y, fit_dv, classes = classes),
     error = function(e) NULL
   )
 

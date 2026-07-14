@@ -51,3 +51,5 @@
 ^\.DS_Store$
 ^\.rumdl_cache$
 ^\.opencode/$
+^\.claude$
+^\.claude/$

@@ -1,6 +1,6 @@
 Package: switchbox
 Title: K-Top-Scoring-Pair (KTSP) Classification
-Version: 2.1.0.9000
+Version: 2.1.0.9001
 Authors@R: c(
     person("Bahman", "Afsari", , "bahman@jhu.edu", role = c("aut", "cph")),
     person("Luigi", "Marchionni", , "marchion@jhu.edu", role = c("aut", "cph")),
@@ -34,10 +34,10 @@ Suggests:
     yardstick
 VignetteBuilder: 
     quarto
+Config/roxygen2/version: 8.0.0
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
 Roxygen: list(markdown = TRUE)
-Config/roxygen2/version: 8.0.0

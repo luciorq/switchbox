@@ -23,3 +23,4 @@ docs
 *.gz
 .Rapp.history
 .quarto
+Rplots.pdf

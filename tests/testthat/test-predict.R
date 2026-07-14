@@ -61,6 +61,21 @@ test_that("swap_ktsp_result includes predictions when requested", {
   expect_true("decision_values" %in% names(result))
 })
 
+test_that("swap_ktsp_result's roc component matches its own reported AUC", {
+  # The AUC implied by result$roc (positive class = higher decision value)
+  # must agree with result$stats["auc"], which is computed independently by
+  # swap_prediction_stats() from the same decision values. If compute_roc()
+  # is called with the positive/negative classes swapped, the two diverge
+  # (auc_from_roc == 1 - stats_auc), which also corrupts swap_plot_roc().
+  data(trainingData, package = "switchbox")
+  data(testingData, package = "switchbox")
+  classifier <- swap_train_ktsp(matTraining, trainingGroup, k_range = 3:8)
+  result <- swap_ktsp_result(classifier, matTesting, testingGroup)
+
+  auc_from_roc <- compute_auc(roc_data = result$roc)
+  expect_equal(unname(auc_from_roc), unname(result$stats[["auc"]]))
+})
+
 test_that("swap_train_test_results evaluates train and test", {
   data(trainingData, package = "switchbox")
   data(testingData, package = "switchbox")
