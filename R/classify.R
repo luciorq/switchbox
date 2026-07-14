@@ -39,8 +39,7 @@ swap_ktsp_statistics <- function(x, classifier, combine_fn) {
   n_pairs <- nrow(tsps)
 
   has_tie_vote <- !is.null(classifier$tie_vote) &&
-    !all(classifier$tie_vote == 0) &&
-    !all(classifier$tie_vote == "both" | classifier$tie_vote == 0)
+    !all(classifier$tie_vote == 0 | classifier$tie_vote == "both")
 
   if (has_tie_vote) {
     # Tie-aware comparisons

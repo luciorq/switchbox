@@ -293,7 +293,7 @@ calculate_signed_score <- function(
       rownames(tie_vote) <- names1
       colnames(tie_vote) <- names2
 
-      list(score = score, labels = labels, tie_vote = tie_vote)
+      list(score = score / 2, labels = labels, tie_vote = tie_vote)
     } else {
       # Restricted + ties -- FIXED: was calling wrong C function
       pairs_no <- nrow(restricted_pairs)

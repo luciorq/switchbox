@@ -30,7 +30,6 @@ Suggests:
     rmarkdown,
     rsample,
     testthat (>= 3.0.0),
-    tibble,
     yardstick
 VignetteBuilder: 
     quarto

@@ -230,8 +230,8 @@ swap_k_by_ttest <- function(
   s0 <- which(y == classes[2])
   s1 <- which(y == classes[1])
 
-  min_tt <- -Inf
-  kmin <- 1L
+  best_tt <- -Inf
+  best_k <- 1L
   classifier_test <- list(labels = rev(classes))
 
   for (k in seq_along(k_range)) {
@@ -255,13 +255,13 @@ swap_k_by_ttest <- function(
     tt <- abs(mean(stat0) - mean(stat1)) /
       sqrt(stats::var(stat1) + stats::var(stat0) + 1e-9)
 
-    if (abs(min_tt - tt) > 1e-7 && min_tt < tt) {
-      min_tt <- tt
-      kmin <- k
+    if (abs(best_tt - tt) > 1e-7 && best_tt < tt) {
+      best_tt <- tt
+      best_k <- k
     }
   }
 
-  seq_len(k_range[kmin])
+  seq_len(k_range[best_k])
 }
 
 
